@@ -1,6 +1,6 @@
 package stream_aggregations.aggregation
 
-trait TupleComposition[A, B] {
+sealed trait TupleComposition[A, B] {
 
   type R
 
