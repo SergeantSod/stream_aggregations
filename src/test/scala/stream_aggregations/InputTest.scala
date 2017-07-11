@@ -3,7 +3,8 @@ package stream_aggregations
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.{FreeSpec, Matchers, WordSpec}
 
-class InputTest extends FreeSpec with Matchers with TypeCheckedTripleEquals with TempFileSpec {
+class InputTest extends UnitSpec with TempFileSpec {
+
   "The input package" - {
 
      //TODO Consider using a prop spec instead of hard-coding some example values here. Not sure how slow that is if we actually create temp files
@@ -16,4 +17,5 @@ class InputTest extends FreeSpec with Matchers with TypeCheckedTripleEquals with
         input.openFile(fileWithContent.getCanonicalPath).toList should ===(List(firstLine, secondLine))
       }
   }
+
 }
