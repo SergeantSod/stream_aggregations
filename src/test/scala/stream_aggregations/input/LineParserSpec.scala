@@ -1,6 +1,6 @@
-package stream_aggregations
+package stream_aggregations.input
 
-import input._
+import stream_aggregations.UnitSpec
 import stream_aggregations.input.extractors._
 
 class LineParsersSpec extends UnitSpec {

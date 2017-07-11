@@ -1,7 +1,6 @@
-package stream_aggregations
+package stream_aggregations.input
 
-import org.scalactic.TypeCheckedTripleEquals
-import org.scalatest.{FreeSpec, Matchers, WordSpec}
+import stream_aggregations.{TempFileSpec, UnitSpec, input}
 
 class InputTest extends UnitSpec with TempFileSpec {
 
