@@ -9,8 +9,7 @@ class AggregationSpec extends UnitSpec {
     val initialValue = 0
     val folding = (a : Int, b: Int) => a + b
 
-    //TODO Investigate why type inference is too weak here.
-    val sumAggregation = new Aggregation[Int, Int](initialValue)(folding)
+    lazy val sumAggregation = Aggregation(initialValue)(folding)
 
     "when accessing its constituents" - {
       "should return the same initial value" in {
@@ -36,27 +35,49 @@ class AggregationSpec extends UnitSpec {
       }
     }
 
-    "when composed with another aggregation" ignore {
-      val productAggregation = new Aggregation[Int, Int](1)(_ * _)
+    "when projected to a component" - {
 
-      lazy val tupleAggregation: Aggregation[(Int, Int), (Int, Int)] = ??? //sumAggregation ||| productAggregation
+      lazy val sumOfFirstComponent = sumAggregation.on{ pair:(Int, Int) => pair._1 }
+
+      "should have the same initial value" - {
+        sumOfFirstComponent.initialValue should ===(sumAggregation.initialValue)
+      }
+
+      "should return a folding function that works on the component" in {
+        forAll{ (a : Int, b : (Int, Int)) =>
+          sumOfFirstComponent.folding(a, b) should ===(folding(a,b._1))
+        }
+      }
+
+      "should return the same as folding over the components of each element of the sequence from the left" in {
+        forAll{ someTuples : Seq[(Int, Int)] =>
+          val firstComponents = someTuples.map(_._1)
+          sumOfFirstComponent(someTuples) should ===(sumAggregation(firstComponents))
+        }
+      }
+
+
+    }
+
+    "when composed with another aggregation" - {
+
+      val productAggregation = Aggregation(1){(_:Int) * (_:Int)}
+
+      lazy val tupleAggregation = sumAggregation ||| productAggregation
 
       "should have the tuple of corresponding initial values as its initial value" in {
         tupleAggregation.initialValue should===(sumAggregation.initialValue, productAggregation.initialValue)
       }
 
       "should apply the folding function element-wise on tuples" in {
-        forAll{ (a : Int, b : Int, c : Int, d : Int) =>
-          tupleAggregation.folding((a, b), (c,d)) should ===(sumAggregation.folding(a,c), productAggregation.folding(b, d))
+        forAll{ (a : Int, b : Int, c : Int) =>
+          tupleAggregation.folding((a, b), c) should ===(sumAggregation.folding(a,c), productAggregation.folding(b, c))
         }
       }
 
       "should fold over sequences component-wise" in {
-        forAll{ tuples : Seq[(Int, Int)] =>
-
-          val firstElements = tuples.map(_._1)
-          val secondElements = tuples.map(_._2)
-          tupleAggregation(tuples) should ===( sumAggregation(firstElements) -> productAggregation(secondElements) )
+        forAll{ elements : Seq[Int] =>
+          tupleAggregation(elements) should ===( sumAggregation(elements) -> productAggregation(elements) )
         }
       }
 
