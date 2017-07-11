@@ -5,18 +5,7 @@ import java.io.{BufferedWriter, File, FileWriter}
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.{FeatureSpec, GivenWhenThen, Matchers}
 
-class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with TypeCheckedTripleEquals {
-
-  def createTempFileWithText(text: String): File = {
-    val tempFile = File.createTempFile("testData", "txt")
-
-    val writer = new BufferedWriter(new FileWriter(tempFile))
-    writer.write(text)
-    writer.close()
-
-    tempFile.deleteOnExit()
-    tempFile
-  }
+class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with TypeCheckedTripleEquals with TempFileSpec {
 
   def captureOutputFrom(block: => Unit): String = {
     val stream = new java.io.ByteArrayOutputStream()
