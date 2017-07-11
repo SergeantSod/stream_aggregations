@@ -9,8 +9,9 @@ trait LineParser[R] { outer =>
     override def parse(line: String): T = {
       val intermediate = outer.parse(line)
       if(mapping.isDefinedAt(intermediate)) mapping(intermediate)
-      else ???
+      else throw new ParseException(line)
     }
   }
 }
 
+class ParseException(line: String) extends RuntimeException("Could not parse Line:$line")

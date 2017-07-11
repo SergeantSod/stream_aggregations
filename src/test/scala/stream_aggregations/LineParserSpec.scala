@@ -21,7 +21,17 @@ class LineParsersSpec extends UnitSpec {
         tupleParser.parse("123  ; 12.13") should===(123, 12.13)
       }
 
-      "should raise a parse error if the match in the map fails" ignore {}
+      "should throw an exception if the outer extractor in the mapping function does not match" in {
+        a[ParseException] should be thrownBy{
+          tupleParser.parse("123  ; 12.13; 123")
+        }
+      }
+
+      "should throw an exception if a nested extractor in the mapping function fails" in {
+        a[ParseException] should be thrownBy{
+          tupleParser.parse("foo  ; 12.13")
+        }
+      }
     }
   }
 }
