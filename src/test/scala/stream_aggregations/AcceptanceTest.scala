@@ -70,8 +70,8 @@ class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with T
       |1355271562 1.80275 2 3.6054  1.80265 1.80275
       |1355271588 1.80295 2 3.6057  1.80275 1.80295""".stripMargin
 
-  feature("Compute aggregates within a rolling time window") {
-    scenario("Reading from a file and printing aggregates to the standard output") {
+  feature("Reading from a file and printing to the standard output") {
+    scenario("Computing aggregates within a rolling time window") {
 
       Given("a plain text file with timestamps and price ratios")
 
@@ -87,6 +87,16 @@ class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with T
       Then("its output should contain the correct aggregates")
       //TODO We might want to use normalization for less brittle comparison
       (actualOutput should ===(expectedOutput))
+    }
+
+    scenario("Early exit without arguments"){
+      Given("I don't any arguments")
+      When("I run the aggregator and capture its ouptu")
+      val actualOutput = captureOutputFrom {
+        CommandLineRunner.main(Array())
+      }
+      Then("its output should contain an error message")
+      actualOutput should include("pass the path to a file")
     }
   }
 }
