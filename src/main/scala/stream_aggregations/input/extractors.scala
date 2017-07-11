@@ -1,21 +1,17 @@
 package stream_aggregations.input
 
+//TODO Consider moving this into the input package object instead
 object extractors {
-  object AnInt {
-    def unapply(s : String) : Option[Int] = try {
-      //TODO Dry this up
-      Some(s.toInt)
+
+  class NumberExtractor[T](toNumber:String=>T) {
+    def unapply(string : String) : Option[T] = try {
+      Some(toNumber(string))
     } catch {
       case _ : NumberFormatException => None
     }
+
   }
 
-  object ADouble {
-    def unapply(s : String) : Option[Double] = try {
-      //TODO Dry this up
-      Some(s.toDouble)
-    } catch {
-      case _ : NumberFormatException => None
-    }
-  }
+  object AnInt extends NumberExtractor[Int](_.toInt)
+  object ADouble extends NumberExtractor[Double](_.toDouble)
 }
