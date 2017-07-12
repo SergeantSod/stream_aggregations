@@ -14,13 +14,15 @@ class RollingWindowAggregatorSpec extends UnitSpec {
     "should aggregate over rolling windows" in {
       forAll{ sequenceOfInts: Seq[Int] =>
         (rollingWindowAggregation over sequenceOfInts).toList should ==={
-          sequenceOfInts.tails.toList.init.map{ someTail =>
-            val window = someTail.take(3)
-            window.sum -> Some(window.last)
-          }
+          sequenceOfInts.indices.map{ index =>
+            val window = sequenceOfInts.slice(index-2, index+1)
+            window.sum -> window.lastOption
+          }.toList
         }
       }
     }
+
+    "should TODO on empty Seq" in pending
 
     case class TraversableWithCounting[T](underlyingTraversable: Traversable[T]) extends Traversable[T] {
 

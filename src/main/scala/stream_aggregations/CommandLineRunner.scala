@@ -1,7 +1,7 @@
 package stream_aggregations
 
 import stream_aggregations.aggregation.{Aggregation, RollingWindowAggregator}
-import stream_aggregations.output.ShowParts
+import stream_aggregations.output.{ShowParts, TablePrinter}
 import stream_aggregations.aggregation.TupleComposition._
 import stream_aggregations.aggregation.default_aggregations._
 import stream_aggregations.input.SeparatedValueParser
@@ -22,9 +22,16 @@ object CommandLineRunner {
     val timeStamps = { t:(Int, Double) => t._1 }
     val priceRatios = { t:(Int, Double) => t._2 }
 
-    val aggregator = RollingWindowAggregator((sum[Double] on priceRatios) ||| (last[Int] on timeStamps)){
+    val aggregation = (last[Int] on timeStamps)     |||
+                      (last[Double] on priceRatios) |||
+                       count                        |||
+                      (sum[Double] on priceRatios)  |||
+                      (min[Double] on priceRatios)  |||
+                      (max[Double] on priceRatios)
+
+    val aggregator = RollingWindowAggregator(aggregation){
       Aggregation(None: Option[Int]){ (last, next: Int) =>
-        //TODO This should be expressable more easily
+        //TODO This should be expressable more easily, maybe optionaBinop helps
         last orElse Some(next) filter { 60 >= next - _ }
       } on timeStamps
     }
@@ -32,7 +39,11 @@ object CommandLineRunner {
     input.readingFrom(filePath){ lines =>
       val parsed = lines.map(lineParser.parse)
 
-      aggregator.over(parsed).foreach(println)
+      aggregator.over(parsed)
+
+      val tablePrinter = new TablePrinter[(Option[Int], Option[Double], Int, Double, Option[Double], Option[Double])](Seq("T", "V", "N", "RS", "MinV", "MaxV"))
+
+      tablePrinter.printTo(Console.out)(aggregator.over(parsed))
     }
   }
 }

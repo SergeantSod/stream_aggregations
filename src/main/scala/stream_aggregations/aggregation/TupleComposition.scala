@@ -44,4 +44,10 @@ trait Implicits extends LowPriorityImplicits {
 
     override def decompose(r: (A, B, C, D, E)): ((A, B, C, D), E) = ((r._1, r._2, r._3, r._4), r._5)
   }
+
+  implicit def tuple6Composition[A, B, C, D, E, F]: TupleComposition.Aux[(A, B, C, D, E), F, (A, B, C, D, E, F)] = new TupleComposition.Aux[(A, B, C, D, E), F, (A, B, C, D, E, F)] {
+    override def compose(head: (A, B, C, D, E), f: F): R = (head._1, head._2, head._3, head._4, head._5, f)
+
+    override def decompose(r: R): ((A, B, C, D, E), F) = ((r._1, r._2, r._3, r._4, r._5), r._6)
+  }
 }

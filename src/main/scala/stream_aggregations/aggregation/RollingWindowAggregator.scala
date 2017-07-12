@@ -7,24 +7,18 @@ class RollingWindowAggregator[A,B,T](aggregation: Aggregation[A,B], windowAggreg
       var pendingAggregates = Vector.empty[(Option[T], A)]
 
       aggregationTarget.foreach{ element =>
+
         pendingAggregates = pendingAggregates :+ windowAggregation.initialValue -> aggregation.initialValue
 
-        val(emittees, remaining) = pendingAggregates map { case(windowAggregate, aggregate) =>
+        pendingAggregates = pendingAggregates map { case(windowAggregate, aggregate) =>
           //TODO See how to DRY this up with the iteration below
           windowAggregation.folding(windowAggregate, element) -> aggregate
-        } partition {
-          case(None, _) => true
-          case        _ => false
+        } collect { case (windowAggregte @ Some(_), aggregate) =>
+          windowAggregte -> aggregation.folding(aggregate, element)
         }
 
-        emittees.foreach{ x => emit(x._2) }
-        pendingAggregates = remaining.map{ case(windowAggregate, aggregate) =>
-          //TODO See how to DRY this up with the iteration above
-          windowAggregate -> aggregation.folding(aggregate, element)
-        }
+        pendingAggregates.headOption.foreach{ a => emit(a._2) }
       }
-
-      pendingAggregates.map(_._2).foreach(emit)
     }
   }
 }

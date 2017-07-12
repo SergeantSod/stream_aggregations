@@ -30,6 +30,10 @@ class TupleCompositionSpec extends UnitSpec {
       "should compose 5-tuples" in {
         compose((1, true, "test", 2.3), 'test) should ===((1, true, "test", 2.3, 'test))
       }
+
+      "should compose 6-tuples" in {
+        compose((1, true, "test", 2.3, 'test), 'c') should ===((1, true, "test", 2.3, 'test, 'c'))
+      }
     }
 
     "when decomposing" - {
@@ -47,6 +51,10 @@ class TupleCompositionSpec extends UnitSpec {
 
       "should decompose 5-tuples" in {
         decompose((1, true, "test", 2.3, 'test)) should ===(((1, true, "test", 2.3), 'test))
+      }
+
+      "should decompose 6-tuples" in {
+        decompose((1, true, "test", 2.3, 'test, 'c')) should ===(((1, true, "test", 2.3, 'test), 'c'))
       }
     }
   }

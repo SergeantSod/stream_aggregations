@@ -2,8 +2,9 @@ package stream_aggregations
 
 import java.io.{BufferedWriter, File, FileWriter}
 
-import org.scalactic.TypeCheckedTripleEquals
+import org.scalactic.{AbstractStringUniformity, TypeCheckedTripleEquals, Uniformity}
 import org.scalatest.{FeatureSpec, GivenWhenThen, Matchers}
+import org.scalactic.StringNormalizations._
 
 class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with TypeCheckedTripleEquals with TempFileSpec {
 
@@ -11,6 +12,10 @@ class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with T
     val stream = new java.io.ByteArrayOutputStream()
     Console.withOut(stream)(block)
     stream.toString()
+  }
+
+  def trimmedPerLine: Uniformity[String] = new AbstractStringUniformity {
+    override def normalized(string: String): String = string.lines.map(_.trim).mkString("\n")
   }
 
   val input =
@@ -57,7 +62,8 @@ class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with T
       |1355271471 1.80295 3 5.40835 1.80265 1.80295
       |1355271507 1.80265 3 5.40835 1.80265 1.80295
       |1355271562 1.80275 2 3.6054  1.80265 1.80275
-      |1355271588 1.80295 2 3.6057  1.80275 1.80295""".stripMargin
+      |1355271588 1.80295 2 3.6057  1.80275 1.80295
+      |""".stripMargin
 
   feature("Reading from a file and printing to the standard output") {
     scenario("Computing aggregates within a rolling time window") {
@@ -72,10 +78,9 @@ class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with T
         CommandLineRunner.main(Array(file.getCanonicalPath))
       }
 
-
       Then("its output should contain the correct aggregates")
-      //TODO We might want to use normalization for less brittle comparison
-      (actualOutput should ===(expectedOutput))
+
+      (actualOutput should ===(expectedOutput))(after being trimmedPerLine)
     }
 
     scenario("Early exit without arguments"){
