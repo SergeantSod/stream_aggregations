@@ -1,5 +1,7 @@
 package stream_aggregations.input
 
+import scala.util.matching.Regex
+
 //TODO Consider moving this into the input package object instead
 object extractors {
 
@@ -11,6 +13,8 @@ object extractors {
     }
 
   }
+
+  val APairOf:Regex = "(\\S+)\\s+(\\S+)".r
 
   object AnInt extends NumberExtractor[Int](_.toInt)
   object ADouble extends NumberExtractor[Double](_.toDouble)

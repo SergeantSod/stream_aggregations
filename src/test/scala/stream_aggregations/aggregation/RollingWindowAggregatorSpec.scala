@@ -22,7 +22,9 @@ class RollingWindowAggregatorSpec extends UnitSpec {
       }
     }
 
-    "should TODO on empty Seq" in pending
+    "should produce no aggregates from an empty sequence" in {
+      rollingWindowAggregation over Seq.empty[Int] should be(empty)
+    }
 
     case class TraversableWithCounting[T](underlyingTraversable: Traversable[T]) extends Traversable[T] {
 

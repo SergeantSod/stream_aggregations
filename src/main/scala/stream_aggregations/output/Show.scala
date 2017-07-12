@@ -17,10 +17,6 @@ trait LowPriorityShowImplicits{
 
 object Show extends LowPriorityShowImplicits {
 
-  implicit def stringShow: Show[String] = new Show[String] {
-    override def show(showable: String): String = showable
-  }
-
   implicit def optionShow[T](implicit s: Show[T]): Show[Option[T]] = new Show[Option[T]] {
     override def show(showable: Option[T]): String = showable.map(s.show).getOrElse("???")
   }

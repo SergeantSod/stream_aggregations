@@ -1,35 +1,45 @@
 package stream_aggregations.input
 
+import org.scalacheck.{Arbitrary, Gen}
 import stream_aggregations.UnitSpec
+import stream_aggregations.input.LineParser.{InputParser, Raw}
+import Arbitrary.arbitrary
 import stream_aggregations.input.extractors._
 
 class LineParsersSpec extends UnitSpec {
-  "A separated-value line parser" - {
+  "line parsers" - {
 
-    lazy val lineParser = new SeparatedValueParser("\\s*;\\s*")
+    "when using the raw parser" - {
+      "should return the line unchanged" in {
+        forAll{ line:String =>
+          Raw.parse(line) should ===(line)
+        }
 
-    "when parsing a line" - {
-      "should return an array of the separated values" in {
-        lineParser.parse("first;  second  ;third") should ===(Array("first", "second", "third"))
       }
     }
 
-    "when mapped to a different type via extractors" - {
-      lazy val tupleParser = lineParser map { case Array(AnInt(i), ADouble(d)) => (i,d) }
+    "when parsing input tuples" - {
 
-      "should return a value of the right type that result from the mapping" in {
-        tupleParser.parse("123  ; 12.13") should===(123, 12.13)
+      "should reconstitute valid inputs from their string representations" in {
+
+        val whitespace = Gen.nonEmptyListOf(Gen.oneOf(Gen.const(' '), Gen.const('\t'))).map(_.mkString)
+
+        forAll(arbitrary[Int], arbitrary[Double], whitespace){ (intValue, doubleValue, someWhiteSpace) =>
+
+          InputParser.parse(s"$intValue${someWhiteSpace}$doubleValue") should===(intValue, doubleValue)
+        }
+
       }
 
       "should throw an exception if the outer extractor in the mapping function does not match" in {
         a[ParseException] should be thrownBy{
-          tupleParser.parse("123  ; 12.13; 123")
+          InputParser.parse("123;123")
         }
       }
 
       "should throw an exception if a nested extractor in the mapping function fails" in {
         a[ParseException] should be thrownBy{
-          tupleParser.parse("foo  ; 12.13")
+          InputParser.parse("foo  12.13")
         }
       }
     }

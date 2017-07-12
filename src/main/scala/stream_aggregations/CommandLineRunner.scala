@@ -4,7 +4,8 @@ import stream_aggregations.aggregation.{Aggregation, RollingWindowAggregator}
 import stream_aggregations.output.{ShowParts, TablePrinter}
 import stream_aggregations.aggregation.TupleComposition._
 import stream_aggregations.aggregation.default_aggregations._
-import stream_aggregations.input.SeparatedValueParser
+import stream_aggregations.input.LineParser.InputParser
+import stream_aggregations.input.LineParser
 import stream_aggregations.input.extractors.{ADouble, AnInt}
 
 object CommandLineRunner {
@@ -15,9 +16,6 @@ object CommandLineRunner {
   }
 
   private def aggregateValuesFromFile(filePath: String) = {
-    val lineParser = new SeparatedValueParser("\\s+").map{
-      case Array(AnInt(int), ADouble(double)) => int -> double
-    }
 
     val timeStamps = { t:(Int, Double) => t._1 }
     val priceRatios = { t:(Int, Double) => t._2 }
@@ -37,9 +35,7 @@ object CommandLineRunner {
     }
 
     input.readingFrom(filePath){ lines =>
-      val parsed = lines.map(lineParser.parse)
-
-      aggregator.over(parsed)
+      val parsed = lines.map(InputParser.parse)
 
       val tablePrinter = new TablePrinter[(Option[Int], Option[Double], Int, Double, Option[Double], Option[Double])](Seq("T", "V", "N", "RS", "MinV", "MaxV"))
 
