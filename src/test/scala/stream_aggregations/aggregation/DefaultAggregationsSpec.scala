@@ -1,10 +1,13 @@
 package stream_aggregations.aggregation
 
 import default_aggregations._
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import stream_aggregations.UnitSpec
 
 class DefaultAggregationsSpec extends UnitSpec {
+
+  def nonEmptySeqs[T : Arbitrary]: Gen[Seq[T]] = Arbitrary.arbitrary[Seq[T]] suchThat { seq => !(seq.isEmpty) }
+
   "Predefined default aggregations" - {
     "sum" - {
       "should sum up Ints" in {
@@ -30,9 +33,7 @@ class DefaultAggregationsSpec extends UnitSpec {
 
     "last" - {
       "should pick the last element wrapped in an option for non-empty sequences" in {
-        val nonEmptyVectors = Arbitrary.arbitrary[Vector[Int]] suchThat {vector => !(vector.isEmpty)}
-
-        forAll(nonEmptyVectors){ someInts =>
+        forAll(nonEmptySeqs[Int]){ someInts =>
           last[Int].apply(someInts) should ===(Some(someInts.last))
         }
       }
@@ -45,5 +46,32 @@ class DefaultAggregationsSpec extends UnitSpec {
         last[String].apply(Seq()) should ===(None)
       }
     }
+
+    "min" - {
+      "should pick the minimum element wrapped in an option for non-empty sequences" in {
+        forAll(nonEmptySeqs[Int]){ someInts =>
+          min[Int].apply(someInts) should ===(Some(someInts.min))
+        }
+      }
+
+      "should return None for an empty sequence" in {
+        min[Int].apply(Seq()) should ===(None)
+      }
+    }
+
+    "max" - {
+      "should pick the maximum element wrapped in an option for non-empty sequences" in {
+        forAll(nonEmptySeqs[Int]){ someInts =>
+          max[Int].apply(someInts) should ===(Some(someInts.max))
+        }
+      }
+
+      "should return None for an empty sequence" in {
+        max[Int].apply(Seq()) should ===(None)
+      }
+    }
   }
+
+
+
 }
