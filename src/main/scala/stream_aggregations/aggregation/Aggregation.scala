@@ -6,6 +6,7 @@ package stream_aggregations.aggregation
 class Aggregation[A, B](start: => A, val folding: (A, B) => A) { leftAggregation =>
   def initialValue: A = start
 
+  //TODO This is actually pretty annoying, since we want to fiddle in implicits in factory methods, so maybe give this a proper name. See the sum aggregation in default_aggregations
   def apply(target: Traversable[B]) = target.foldLeft(initialValue)(folding)
 
   def |||[OtherA](rightAggregation: Aggregation[OtherA, B])(implicit tc: TupleComposition[A,OtherA]): Aggregation[tc.R, B]={
