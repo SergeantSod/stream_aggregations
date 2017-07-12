@@ -2,7 +2,6 @@ package stream_aggregations.input
 
 import stream_aggregations.input.extractors.{ADouble, AnInt, APairOf}
 
-//TODO Consider variance annotation
 trait LineParser[R] {
   outer =>
 
@@ -25,7 +24,4 @@ object LineParser {
     override def parse(line: String): String = line
   }
 
-  val InputParser: LineParser[(Int, Double)] = Raw.map { case APairOf(AnInt(intValue), ADouble(doubleValue)) =>
-    (intValue, doubleValue)
-  }
 }

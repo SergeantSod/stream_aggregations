@@ -11,7 +11,6 @@ class InputTest extends UnitSpec with TempFileSpec {
       val firstLine = "some content for the first line"
       val secondLine = "some different content for the second line"
 
-      //TODO Consider using a prop spec instead of hard-coding some example values here. Not sure how slow that is if we actually create temp files
       val fileWithContent = createTempFileWithText(s"$firstLine\n$secondLine")
 
       "should pass the lines to a lambda" in {

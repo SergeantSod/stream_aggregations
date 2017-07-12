@@ -2,7 +2,6 @@ package stream_aggregations.input
 
 import scala.util.matching.Regex
 
-//TODO Consider moving this into the input package object instead
 object extractors {
 
   class NumberExtractor[T](toNumber:String=>T) {

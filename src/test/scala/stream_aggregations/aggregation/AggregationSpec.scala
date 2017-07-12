@@ -37,7 +37,7 @@ class AggregationSpec extends UnitSpec {
 
     "when projected to a component" - {
 
-      lazy val sumOfFirstComponent = sumAggregation.on{ pair:(Int, Int) => pair._1 }
+      lazy val sumOfFirstComponent = sumAggregation.of{ pair:(Int, Int) => pair._1 }
 
       "should have the same initial value" - {
         sumOfFirstComponent.initialValue should ===(sumAggregation.initialValue)

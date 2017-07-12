@@ -1,12 +1,10 @@
 package stream_aggregations
 
-import stream_aggregations.aggregation.{Aggregation, RollingWindowAggregator}
-import stream_aggregations.output.{ShowParts, TablePrinter}
+import stream_aggregations.aggregation.RollingWindowAggregator
 import stream_aggregations.aggregation.TupleComposition._
 import stream_aggregations.aggregation.default_aggregations._
-import stream_aggregations.input.LineParser.InputParser
-import stream_aggregations.input.LineParser
-import stream_aggregations.input.extractors.{ADouble, AnInt}
+import stream_aggregations.input.InputParser
+import stream_aggregations.output.TablePrinter
 
 object CommandLineRunner {
 
@@ -20,18 +18,18 @@ object CommandLineRunner {
     val timeStamps = { t:(Int, Double) => t._1 }
     val priceRatios = { t:(Int, Double) => t._2 }
 
-    val aggregation = (last[Int] on timeStamps)     |||
-                      (last[Double] on priceRatios) |||
+    val aggregation = (last[Int] of timeStamps)     |||
+                      (last[Double] of priceRatios) |||
                        count                        |||
-                      (sum[Double] on priceRatios)  |||
-                      (min[Double] on priceRatios)  |||
-                      (max[Double] on priceRatios)
+                      (sum[Double] of priceRatios)  |||
+                      (min[Double] of priceRatios)  |||
+                      (max[Double] of priceRatios)
 
     val aggregator = RollingWindowAggregator(aggregation){
-      Aggregation(None: Option[Int]){ (last, next: Int) =>
-        //TODO This should be expressable more easily, maybe optionaBinop helps
-        last orElse Some(next) filter { 60 >= next - _ }
-      } on timeStamps
+      optionalBinop[Int]{ (oldOne, newOne) =>
+        if( (newOne - oldOne) <= 60) Some(oldOne)
+        else None
+      } of timeStamps
     }
 
     input.readingFrom(filePath){ lines =>
