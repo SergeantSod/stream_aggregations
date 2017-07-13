@@ -80,8 +80,8 @@ class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with T
     }
 
     scenario("Early exit without arguments"){
-      Given("I don't any arguments")
-      When("I run the aggregator and capture its ouptu")
+      Given("I don't provide any arguments")
+      When("I run the aggregator and capture its output")
       val actualOutput = captureOutputFrom {
         CommandLineRunner.main(Array())
       }
