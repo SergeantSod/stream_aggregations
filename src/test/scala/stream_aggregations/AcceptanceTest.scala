@@ -6,16 +6,12 @@ import org.scalactic.{AbstractStringUniformity, TypeCheckedTripleEquals, Uniform
 import org.scalatest.{FeatureSpec, GivenWhenThen, Matchers}
 import org.scalactic.StringNormalizations._
 
-class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with TypeCheckedTripleEquals with TempFileSpec {
+class AcceptanceTest extends FeatureSpec with GivenWhenThen with Matchers with TypeCheckedTripleEquals with TempFileSpec with StringNormalization {
 
   def captureOutputFrom(block: => Unit): String = {
     val stream = new java.io.ByteArrayOutputStream()
     Console.withOut(stream)(block)
     stream.toString()
-  }
-
-  def trimmedPerLine: Uniformity[String] = new AbstractStringUniformity {
-    override def normalized(string: String): String = string.lines.map(_.trim).mkString("\n")
   }
 
   val input =

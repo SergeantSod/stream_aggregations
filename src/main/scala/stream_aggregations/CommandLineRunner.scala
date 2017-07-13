@@ -15,7 +15,7 @@ object CommandLineRunner {
 
   private def aggregateValuesFromFile(filePath: String) = {
 
-    val timeStamps = { t:(Int, Double) => t._1 }
+    val timeStamps  = { t:(Int, Double) => t._1 }
     val priceRatios = { t:(Int, Double) => t._2 }
 
     val aggregation = (last[Int] of timeStamps)     |||
