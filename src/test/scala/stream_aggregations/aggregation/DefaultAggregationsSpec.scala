@@ -12,13 +12,13 @@ class DefaultAggregationsSpec extends UnitSpec {
     "sum" - {
       "should sum up Ints" in {
         forAll{ someInts: Seq[Int] =>
-          sum[Int].apply(someInts) should ===(someInts.sum)
+          sum[Int] over someInts should ===(someInts.sum)
         }
       }
 
       "should sum up Doubles" in {
         forAll { someDoubles: Seq[Double] =>
-          sum[Double].apply(someDoubles) should ===(someDoubles.sum)
+          sum[Double] over someDoubles should ===(someDoubles.sum)
         }
       }
     }
@@ -26,7 +26,7 @@ class DefaultAggregationsSpec extends UnitSpec {
     "count" - {
       "should count elements" in {
         forAll{ booleans: Seq[Boolean] =>
-          count.apply(booleans) should ===(booleans.size)
+          count over booleans should ===(booleans.size)
         }
       }
     }
@@ -34,40 +34,40 @@ class DefaultAggregationsSpec extends UnitSpec {
     "last" - {
       "should pick the last element wrapped in an option for non-empty sequences" in {
         forAll(nonEmptySeqs[Int]){ someInts =>
-          last[Int].apply(someInts) should ===(Some(someInts.last))
+          last[Int] over someInts should ===(Some(someInts.last))
         }
       }
 
       "should not lose nulls in the last position" in {
-        last[String].apply(Seq[String](null)) should !==(None)
+        last[String] over (Seq[String](null)) should !==(None)
       }
 
       "should return None for an empty sequence" in {
-        last[String].apply(Seq()) should ===(None)
+        last[String] over Seq.empty should ===(None)
       }
     }
 
     "min" - {
       "should pick the minimum element wrapped in an option for non-empty sequences" in {
         forAll(nonEmptySeqs[Int]){ someInts =>
-          min[Int].apply(someInts) should ===(Some(someInts.min))
+          min[Int] over someInts should ===(Some(someInts.min))
         }
       }
 
       "should return None for an empty sequence" in {
-        min[Int].apply(Seq()) should ===(None)
+        min[Int] over Seq.empty should ===(None)
       }
     }
 
     "max" - {
       "should pick the maximum element wrapped in an option for non-empty sequences" in {
         forAll(nonEmptySeqs[Int]){ someInts =>
-          max[Int].apply(someInts) should ===(Some(someInts.max))
+          max[Int] over someInts should ===(Some(someInts.max))
         }
       }
 
       "should return None for an empty sequence" in {
-        max[Int].apply(Seq()) should ===(None)
+        max[Int] over Seq.empty should ===(None)
       }
     }
   }

@@ -25,12 +25,12 @@ class AggregationSpec extends UnitSpec {
 
     "when applied to a sequence" - {
       "should return the initial value if the sequence is empty" in {
-        sumAggregation(Seq.empty[Int]) should ===(sumAggregation.initialValue)
+        sumAggregation over Seq.empty[Int] should ===(sumAggregation.initialValue)
       }
 
       "should return the same as folding over the sequence from the left" in {
         forAll{ someSequence : Seq[Int] =>
-          sumAggregation(someSequence) should ===(someSequence.foldLeft(initialValue)(folding))
+          sumAggregation over someSequence should ===(someSequence.foldLeft(initialValue)(folding))
         }
       }
     }
@@ -52,7 +52,7 @@ class AggregationSpec extends UnitSpec {
       "should return the same as folding over the components of each element of the sequence from the left" in {
         forAll{ someTuples : Seq[(Int, Int)] =>
           val firstComponents = someTuples.map(_._1)
-          sumOfFirstComponent(someTuples) should ===(sumAggregation(firstComponents))
+          sumOfFirstComponent over someTuples should ===(sumAggregation over firstComponents)
         }
       }
 
@@ -77,7 +77,7 @@ class AggregationSpec extends UnitSpec {
 
       "should fold over sequences component-wise" in {
         forAll{ elements : Seq[Int] =>
-          tupleAggregation(elements) should ===( sumAggregation(elements) -> productAggregation(elements) )
+          tupleAggregation over elements should ===( (sumAggregation over elements) -> (productAggregation over elements) )
         }
       }
 
