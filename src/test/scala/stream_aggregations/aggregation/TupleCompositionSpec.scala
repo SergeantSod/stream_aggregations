@@ -5,7 +5,6 @@ import stream_aggregations.UnitSpec
 class TupleCompositionSpec extends UnitSpec {
   "The TupleComposition type class" - {
 
-    //TODO Potentially move these methods into the implementation, so it can just be imported from there? Only if we use it in multiple places and find that it is less verbose.
     def compose[A, B](a: A, b: B)(implicit composition: TupleComposition[A, B]): composition.R = {
       composition.compose(a, b)
     }
