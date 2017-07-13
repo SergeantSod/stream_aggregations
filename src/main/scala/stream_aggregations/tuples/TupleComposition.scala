@@ -1,5 +1,10 @@
 package stream_aggregations.tuples
 
+/**
+  * A type-class to allow working with tuples of arbitrary arity (currently works up to an arity of 6).
+  * @tparam A
+  * @tparam B
+  */
 sealed trait TupleComposition[A, B] {
 
   type R

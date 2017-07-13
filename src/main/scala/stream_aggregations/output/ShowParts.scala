@@ -2,6 +2,11 @@ package stream_aggregations.output
 
 import stream_aggregations.tuples.TupleComposition
 
+/**
+  * A type class for something that can be shown as a record in a table.
+  * Each such object gets its own line in the table, and each part of it will get its own column within that line.
+  * @tparam T
+  */
 trait ShowParts[T]{
   def showParts(showable: T): Seq[String]
 }

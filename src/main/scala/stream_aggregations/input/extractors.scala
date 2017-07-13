@@ -2,6 +2,10 @@ package stream_aggregations.input
 
 import scala.util.matching.Regex
 
+/**
+  * Some Extractors that come in handy for parsing the text format.
+  */
+
 object extractors {
 
   class NumberExtractor[T](toNumber:String=>T) {

@@ -6,6 +6,10 @@ import stream_aggregations.aggregation.default_aggregations._
 import stream_aggregations.input.InputParser
 import stream_aggregations.output.TablePrinter
 
+/**
+  * The command line runner. I.e. the main entry point. Reads from a file and prints a table to stdout.
+  */
+
 object CommandLineRunner {
 
   def main(arguments: Array[String]): Unit = arguments match {
