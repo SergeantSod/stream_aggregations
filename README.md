@@ -6,9 +6,10 @@ The processing is done via streaming, so memory does not explode for long-runnin
 
 This implementation merely reads from a file and prints to the console, though.
 
-Run via sbt. Example:
+Everything works with vanilly sbt. Example:
 
 ```
+sbt test
 sbt "run /path/to/text_file.txt"
 ```
 
