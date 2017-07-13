@@ -6,14 +6,15 @@ import scala.math.max
 
 
 case class TablePrinter[T](headers: Seq[String], headerSeparator:Char='-', columnPadding:Char=' ', columnWidthProbingDepth:Int=25)(implicit showParts: ShowParts[T]){
-  def printTo(outputStream: PrintStream)(target: Traversable[T]): Unit = {
-    val (forProbing, rest) = target.splitAt(columnWidthProbingDepth)
+  def printTo(outputStream: PrintStream)(target: Iterator[T]): Unit = {
+    val forProbing = target.take(columnWidthProbingDepth).toList
     val columnWidths = probeColumnWidths(forProbing)
     val tableWidth = columnWidths.sum + columnWidths.size
 
     printWithColumnWidths(outputStream, columnWidths)(headers)
     outputStream.println("".padTo(tableWidth, headerSeparator))
 
+    forProbing foreach printWithColumnWidths(outputStream, columnWidths)
     target foreach printWithColumnWidths(outputStream, columnWidths)
   }
 
