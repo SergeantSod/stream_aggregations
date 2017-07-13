@@ -1,5 +1,7 @@
 package stream_aggregations.aggregation
 
+import stream_aggregations.tuples.TupleComposition
+
 //TODO Explain in documentation what the point is: Captures everything about a fold, and you can either apply it incrementally or apply it like the method call. Your choice on WHAT and how often.
 
 class Aggregation[Aggregate, Element](start: => Aggregate, val folding: (Aggregate, Element) => Aggregate) { leftAggregation =>

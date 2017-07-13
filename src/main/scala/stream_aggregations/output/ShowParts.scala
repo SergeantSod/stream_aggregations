@@ -1,6 +1,6 @@
 package stream_aggregations.output
 
-import stream_aggregations.aggregation.TupleComposition
+import stream_aggregations.tuples.TupleComposition
 
 trait ShowParts[T]{
   def showParts(showable: T): Seq[String]

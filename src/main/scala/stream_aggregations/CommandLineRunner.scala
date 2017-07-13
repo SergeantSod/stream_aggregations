@@ -1,7 +1,7 @@
 package stream_aggregations
 
 import stream_aggregations.aggregation.RollingWindowAggregator
-import stream_aggregations.aggregation.TupleComposition._
+import stream_aggregations.tuples.TupleComposition._
 import stream_aggregations.aggregation.default_aggregations._
 import stream_aggregations.input.InputParser
 import stream_aggregations.output.TablePrinter

@@ -3,7 +3,7 @@ package stream_aggregations.output
 import java.text.{DecimalFormat, DecimalFormatSymbols}
 import java.util.Locale
 
-import stream_aggregations.aggregation.TupleComposition
+import stream_aggregations.tuples.TupleComposition
 
 trait Show[T] {
   def show(showable: T): String

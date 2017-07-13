@@ -1,4 +1,4 @@
-package stream_aggregations.aggregation
+package stream_aggregations.tuples
 
 sealed trait TupleComposition[A, B] {
 
